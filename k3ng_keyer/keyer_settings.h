@@ -1,7 +1,7 @@
 // Initial and hardcoded settings
-#define initial_speed_wpm 26             // "factory default" keyer speed setting
+#define initial_speed_wpm 20             // "factory default" keyer speed setting // LA4ZCA mod to 20 from 26
 #define initial_command_mode_speed_wpm 20 // "factory default" command mode speed setting 
-#define initial_sidetone_freq 600        // "factory default" sidetone frequency setting
+#define initial_sidetone_freq 880//659        // "factory default" sidetone frequency setting
 #define hz_high_beep 1500                // frequency in hertz of high beep
 #define hz_low_beep 400                  // frequency in hertz of low beep
 #define initial_dah_to_dit_ratio 300     // 300 = 3 / normal 3:1 ratio
@@ -18,7 +18,7 @@
 #define initial_ptt_lead_time_tx6 0         // PTT lead time in mS
 #define initial_ptt_tail_time_tx6 10         // PTT tail time in mS
 #define initial_qrss_dit_length 1        // QRSS dit length in seconds
-#define initial_pot_wpm_low_value 13     // Potentiometer WPM fully CCW
+#define initial_pot_wpm_low_value 6     // Potentiometer WPM fully CCW // LA4ZCA changed
 #define initial_pot_wpm_high_value 35    // Potentiometer WPM fully CW
 #define wpm_limit_low 5
 #define wpm_limit_high 60
@@ -48,7 +48,7 @@
 #define default_cmos_super_keyer_iambic_b_timing_percent 33 // use with FEATURE_CMOS_SUPER_KEYER_IAMBIC_B_TIMING; should be between 0 to 99 % (0% = true iambic b;100% = iambic a behavior)
 #define cw_echo_timing_factor 0.25
 #define winkey_paddle_echo_buffer_decode_time_factor 1600.0
-#define potentiometer_always_on 0
+#define potentiometer_always_on 1 // LA4ZCA changed from 0
 #define ptt_interlock_check_every_ms 100
 #define ptt_interlock_active_state HIGH
 #define unknown_cw_character '*'
@@ -137,13 +137,13 @@
 #endif //FEATURE_WINKEY_EMULATION
 
 
-
+// LA4ZCA modified
 #define PRIMARY_SERIAL_PORT &Serial
-#define PRIMARY_SERIAL_PORT_BAUD 115200     // This applies only when the port is in Command Line Interface mode.  In Winkey mode it will default to 1200.
+#define PRIMARY_SERIAL_PORT_BAUD 9600     // This applies only when the port is in Command Line Interface mode.  In Winkey mode it will default to 1200.
 
 #ifdef FEATURE_COMMAND_LINE_INTERFACE_ON_SECONDARY_PORT
   #define SECONDARY_SERIAL_PORT &Serial1
-  #define SECONDARY_SERIAL_PORT_BAUD 115200
+  #define SECONDARY_SERIAL_PORT_BAUD 9600
 #endif
 
 
@@ -220,18 +220,19 @@
 #if defined(OPTION_DFROBOT_LCD_COMMAND_BUTTONS)
 
   // For V1.1 board use these values
-  #define dfrobot_btnRIGHT_analog 50
-  #define dfrobot_btnUP_analog 250
-  #define dfrobot_btnDOWN_analog 450
-  #define dfrobot_btnLEFT_analog 650
-  #define dfrobot_btnSELECT_analog 850  
+//  #define dfrobot_btnRIGHT_analog 50
+//  #define dfrobot_btnUP_analog 250
+//  #define dfrobot_btnDOWN_analog 450
+//  #define dfrobot_btnLEFT_analog 650
+//  #define dfrobot_btnSELECT_analog 850  
 
-  // For V1.0 board use these values
-  // #define dfrobot_btnRIGHT_analog 50
-  // #define dfrobot_btnUP_analog 195
-  // #define dfrobot_btnDOWN_analog 380
-  // #define dfrobot_btnLEFT_analog 555
-  // #define dfrobot_btnSELECT_analog 790  
+// LA4ZCA Chinese lcd shield key values: 640, 410, 254, 98, 0
+ //  For V1.0 board use these values // LA4ZCA change
+   #define dfrobot_btnRIGHT_analog 50
+   #define dfrobot_btnUP_analog 195
+   #define dfrobot_btnDOWN_analog 380
+   #define dfrobot_btnLEFT_analog 555
+   #define dfrobot_btnSELECT_analog 790  
   
   // button to memory mappings (0 = command button, 1 = memory 1, 2 = memory 2, etc.)
   #define dfrobot_btnRIGHT  2

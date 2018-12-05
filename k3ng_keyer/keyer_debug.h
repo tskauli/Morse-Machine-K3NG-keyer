@@ -1,4 +1,6 @@
 // don't touch these unless you know what the hell you are doing or you're asked to uncomment these for debug dumps
+// #define DEBUG_BUTTONS
+//#define DEBUG_BUTTON_ARRAY
 // #define DEBUG_STARTUP
 // #define DEBUG_LOOP
 // #define DEBUG_EEPROM
@@ -14,7 +16,6 @@
 // #define DEBUG_CHECK_SERIAL
 // #define DEBUG_PS2_KEYBOARD
 // #define DEBUG_VARIABLE_DUMP
-// #define DEBUG_BUTTONS
 // #define DEBUG_COMMAND_MODE
 // #define DEBUG_GET_CW_INPUT_FROM_USER
 // #define DEBUG_POTENTIOMETER

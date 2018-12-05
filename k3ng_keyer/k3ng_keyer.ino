@@ -1344,10 +1344,11 @@ byte pot_wpm_low_value;
     byte cli_prosign_flag = 0;
     byte cli_wait_for_cr_to_send_cw = 0;
     #if defined(FEATURE_STRAIGHT_KEY_ECHO)
-      byte cli_straight_key_echo = cli_straight_key_echo_on_at_boot;
+//      byte cli_straight_key_echo = cli_straight_key_echo_on_at_boot; // LA4ZCA moved outside #if...
     #endif   
   #endif //FEATURE_COMMAND_LINE_INTERFACE  
 #endif //FEATURE_SERIAL
+byte cli_straight_key_echo = cli_straight_key_echo_on_at_boot; // LA4ZCA ...moved to here.
 
 byte send_buffer_array[send_buffer_size];
 byte send_buffer_bytes = 0;
@@ -5442,7 +5443,7 @@ int read_settings_from_eeprom() {
   
   #if !defined(ARDUINO_SAM_DUE) || (defined(ARDUINO_SAM_DUE) && defined(FEATURE_EEPROM_E24C1024))
 
-    if (EEPROM.read(0) == eeprom_magic_number){
+    if (false /*EEPROM.read(0) == eeprom_magic_number*/){       // LA4ZCA mod: always initialize EEPROM
     
       byte* p = (byte*)(void*)&configuration;
       unsigned int i;
@@ -6239,7 +6240,7 @@ void speed_change_command_mode(int change)
   
 
   #ifdef FEATURE_DISPLAY
-    lcd_center_print_timed(String(configuration.wpm_command_mode) + " wpm", 0, default_display_msg_delay);
+    lcd_center_print_timed(String(configuration.wpm_command_mode) + " word/min", 0, default_display_msg_delay); // LA4ZCA change
   #endif
 }
 
@@ -6278,7 +6279,7 @@ void speed_set(int wpm_set){
       lcd_center_print_timed(String(configuration.wpm) + " wpm - " + (configuration.wpm*5) + " cpm ", 0, default_display_msg_delay);
       lcd_center_print_timed(String(1200/configuration.wpm) + ":" + (((1200/configuration.wpm)*configuration.dah_to_dit_ratio)/100) + "ms 1:" + (float(configuration.dah_to_dit_ratio)/100.00), 1, default_display_msg_delay);
     #else
-      lcd_center_print_timed(String(configuration.wpm) + " wpm", 0, default_display_msg_delay);
+      lcd_center_print_timed(String(configuration.wpm) + " word/min", 0, default_display_msg_delay); // LA4ZCA change
     #endif
 
   }
@@ -6412,7 +6413,7 @@ void command_mode()
     if (LCD_COLUMNS < 9){
       lcd_center_print_timed("Cmd Mode", 0, default_display_msg_delay);
     } else {
-      lcd_center_print_timed("Command Mode", 0, default_display_msg_delay);
+      lcd_center_print_timed(F("Command Mode"), 0, default_display_msg_delay);
     }
   #endif 
 
@@ -7651,6 +7652,7 @@ void setOneButton(int button, int index) {
 #endif
 
 //------------------------------------------------------------------
+//------------------------------------------------------------------**************************************************************INIT ANALOG BUTTON ARRAY
 
 void initialize_analog_button_array() {
 #ifdef FEATURE_COMMAND_BUTTONS  
@@ -7677,6 +7679,7 @@ void initialize_analog_button_array() {
     int lower_button_value;
     int higher_button_value;
 
+    
     #ifdef OPTION_REVERSE_BUTTON_ORDER
       byte y = analog_buttons_number_of_buttons - 1;
     #endif
@@ -7709,7 +7712,6 @@ void initialize_analog_button_array() {
         debug_serial_port->println(button_array_high_limit[x]);
       #endif //DEBUG_BUTTON_ARRAY
 
-
     }
   
   #else //FEATURE_DL2SBA_BANKSWITCH
@@ -7730,7 +7732,7 @@ void initialize_analog_button_array() {
 }
 
 
-//------------------------------------------------------------------
+//------------------------------------------------------------------************************************************************** ANALOGBUTTONPRESSED
 
 #ifdef FEATURE_COMMAND_BUTTONS
 byte analogbuttonpressed() {
@@ -7742,12 +7744,14 @@ byte analogbuttonpressed() {
 
     // based on code from: https://www.dfrobot.com/wiki/index.php/Arduino_LCD_KeyPad_Shield_(SKU:_DFR0009)#Pin_Allocation
 
-    for (byte x = 0;x < 19;x++){
-      analog_read_temp = analogRead(analog_buttons_pin);
-      if (analog_read_temp <= button_array_high_limit[analog_buttons_number_of_buttons-1]){
-        analog_line_read_average = (analog_line_read_average + analog_read_temp) / 2;
-      }
-    }
+//    for (byte x = 0;x < 19;x++){
+//      analog_read_temp = analogRead(analog_buttons_pin);
+//      if (analog_read_temp <= button_array_high_limit[analog_buttons_number_of_buttons-1]){
+//        analog_line_read_average = (analog_line_read_average + analog_read_temp) / 2;
+//      }
+//    }
+
+    analog_line_read_average = analogRead(analog_buttons_pin); // LA4ZCA new analog input
 
     if (analog_line_read_average > 1000){
       return dfrobot_btnNONE;
@@ -7852,7 +7856,7 @@ byte analogbuttonpressed() {
   
 #endif //FEATURE_COMMAND_BUTTONS
 
-//------------------------------------------------------------------
+//------------------------------------------------------------------************************************************************** ANNALOGBUTTONREAD
 #ifdef FEATURE_COMMAND_BUTTONS
 byte analogbuttonread(byte button_number) {
  
@@ -7941,7 +7945,7 @@ byte analogbuttonread(byte button_number) {
 }
 #endif
 
-//------------------------------------------------------------------
+//------------------------------------------------------------------**************************************************************CHECKCOMMANDBUTTONS
 
 #ifdef FEATURE_COMMAND_BUTTONS
 void check_command_buttons()
@@ -8105,7 +8109,7 @@ void check_command_buttons()
 }
 #endif //FEATURE_COMMAND_BUTTONS
 
-//-------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------****************************************************************************************************************************
 
 void service_dit_dah_buffers()
 {
@@ -16469,6 +16473,7 @@ void initialize_serial_ports(){
         primary_serial_port->print(F("\n\rK3NG Keyer Version "));
         primary_serial_port->write(CODE_VERSION);
         primary_serial_port->println();
+
         #if defined(FEATURE_SERIAL_HELP)
           primary_serial_port->println(F("\n\rEnter \\? for help\n"));
         #endif
@@ -16617,7 +16622,7 @@ void initialize_display(){
     if (LCD_COLUMNS < 9){
       lcd_center_print_timed("K3NGKeyr",0,4000);
     } else {
-      lcd_center_print_timed("K3NG Keyer",0,4000);
+      lcd_center_print_timed(F("You can learn"),0,4000);
     }
   #endif //FEATURE_DISPLAY
 
@@ -16630,13 +16635,25 @@ void initialize_display(){
       key_tx = 0;
       configuration.sidetone_mode = SIDETONE_ON;     
       #ifdef FEATURE_DISPLAY
-        lcd_center_print_timed("h",1,4000);
+        lcd_center_print_timed("M",1,4000);
       #endif
-      send_char('H',KEYER_NORMAL);
+      send_char('M',KEYER_NORMAL);
       #ifdef FEATURE_DISPLAY
-        lcd_center_print_timed("hi",1,4000);
+        lcd_center_print_timed("MO",1,4000);
       #endif
-      send_char('I',KEYER_NORMAL); 
+      send_char('O',KEYER_NORMAL); 
+      #ifdef FEATURE_DISPLAY
+        lcd_center_print_timed("MOR",1,4000);
+      #endif
+      send_char('R',KEYER_NORMAL); 
+      #ifdef FEATURE_DISPLAY
+        lcd_center_print_timed("MORS",1,4000);
+      #endif
+      send_char('S',KEYER_NORMAL); 
+      #ifdef FEATURE_DISPLAY
+        lcd_center_print_timed("MORSE",1,4000);
+      #endif
+      send_char('E',KEYER_NORMAL); 
       configuration.sidetone_mode = oldSideTone; 
       key_tx = oldKey;     
     #endif //OPTION_DO_NOT_SAY_HI
