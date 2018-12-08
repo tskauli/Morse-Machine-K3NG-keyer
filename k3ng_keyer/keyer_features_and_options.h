@@ -6,24 +6,27 @@
 #define FEATURE_LCD_4BIT                // classic LCD disidefplay using 4 I/O lines
 #define FEATURE_STRAIGHT_KEY
 #define FEATURE_STRAIGHT_KEY_ECHO
-#define OPTION_NON_ENGLISH_EXTENSIONS  // add support for additional CW characters (i.e. À, Å, Þ, etc.)
-#define OPTION_DISPLAY_NON_ENGLISH_EXTENSIONS  // LCD display suport for non-English (NO/DK/DE) characters - Courtesy of OZ1JHM
 #define FEATURE_ALPHABET_SEND_PRACTICE  // enables command mode S command - created by Ryan, KC2ZWM
 #define FEATURE_COMMAND_MODE_PROGRESSIVE_5_CHAR_ECHO_PRACTICE // enables command mode U
 #define OPTION_DFROBOT_LCD_COMMAND_BUTTONS
 #define FEATURE_COMMAND_BUTTONS
+#define FEATURE_TRAINING_COMMAND_LINE_INTERFACE
+#define OPTION_WORDSWORTH_NORSK
+
+#define OPTION_NON_ENGLISH_EXTENSIONS  // add support for additional CW characters (i.e. À, Å, Þ, etc.)
+#define OPTION_DISPLAY_NON_ENGLISH_EXTENSIONS  // LCD display suport for non-English (NO/DK/DE) characters - Courtesy of OZ1JHM
+#define OPTION_PROSIGN_SUPPORT    // additional prosign support for paddle and straight key echo on display, CLI, and in memory storage
+#define FEATURE_PADDLE_ECHO
 
 
 // #define FEATURE_COMMAND_LINE_INTERFACE  // Command Line Interface functionality
 // #define FEATURE_CW_DECODER
-// #define FEATURE_PADDLE_ECHO
 // #define OPTION_REVERSE_BUTTON_ORDER                // This is mainly for the DJ0MY NanoKeyer http://nanokeyer.wordpress.com/
 
 // #define FEATURE_MEMORIES             // on the Arduino Due, you must have FEATURE_EEPROM_E24C1024 and E24C1024 EEPROM hardware in order to compile this
 // #define FEATURE_MEMORY_MACROS
 // #define FEATURE_WINKEY_EMULATION    // disabling Automatic Software Reset is highly recommended (see documentation)
 // #define FEATURE_BEACON
-// #define FEATURE_TRAINING_COMMAND_LINE_INTERFACE
 // #define FEATURE_POTENTIOMETER         // do not enable unless you have a potentiometer connected, otherwise noise will falsely trigger wpm changes
 // #define FEATURE_SIDETONE_SWITCH   // adds switch control for the sidetone output. requires an external toggle switch (assigned to an arduino pin - see keyer_pin_settings.h). 
 // #define FEATURE_SERIAL_HELP
@@ -94,7 +97,6 @@
 // #define OPTION_CW_DECODER_GOERTZEL_AUDIO_DETECTOR
 // #define OPTION_INVERT_PADDLE_PIN_LOGIC
 // #define OPTION_ADVANCED_SPEED_DISPLAY //enables "nerd" speed visualization on display: wpm, cpm (char per min), duration of dit and dah in milliseconds and ratio (contributed by Giorgio, IZ2XBZ)
-// #define OPTION_PROSIGN_SUPPORT    // additional prosign support for paddle and straight key echo on display, CLI, and in memory storage
 // #define OPTION_RUSSIAN_LANGUAGE_SEND_CLI // Russian language CLI sending support (contributed by Павел Бирюков, UA1AQC)
 #define OPTION_DO_NOT_SEND_UNKNOWN_CHAR_QUESTION
 // #define OPTION_CMOS_SUPER_KEYER_IAMBIC_B_TIMING_ON_BY_DEFAULT
@@ -102,7 +104,7 @@
 
 // #define OPTION_WORDSWORTH_CZECH
 // #define OPTION_WORDSWORTH_DEUTSCH
-// #define OPTION_WORDSWORTH_NORSK
+
 
 #define OPTION_EXCLUDE_EXTENDED_CLI_COMMANDS
 

@@ -1343,12 +1343,13 @@ byte pot_wpm_low_value;
     byte cli_paddle_echo = cli_paddle_echo_on_at_boot;
     byte cli_prosign_flag = 0;
     byte cli_wait_for_cr_to_send_cw = 0;
-    #if defined(FEATURE_STRAIGHT_KEY_ECHO)
-//      byte cli_straight_key_echo = cli_straight_key_echo_on_at_boot; // LA4ZCA moved outside #if...
-    #endif   
   #endif //FEATURE_COMMAND_LINE_INTERFACE  
 #endif //FEATURE_SERIAL
-byte cli_straight_key_echo = cli_straight_key_echo_on_at_boot; // LA4ZCA ...moved to here.
+
+  // LA4ZCA ...moved to here.
+  #if defined(FEATURE_STRAIGHT_KEY_ECHO)
+    byte cli_straight_key_echo = cli_straight_key_echo_on_at_boot; // LA4ZCA moved outside #if...
+  #endif   
 
 byte send_buffer_array[send_buffer_size];
 byte send_buffer_bytes = 0;
@@ -2338,9 +2339,11 @@ void service_keypad(){
         debug_serial_port->println(decode_character);
       #endif //DEBUG_FEATURE_STRAIGHT_KEY_ECHO
 
-
-      #if defined(OPTION_PROSIGN_SUPPORT)
+      #if defined(OPTION_PROSIGN_SUPPORT) || defined(OPTION_DISPLAY_NON_ENGLISH_EXTENSIONS) // LA4ZCA change
         byte cw_ascii_temp = convert_cw_number_to_ascii(decode_character);
+      #endif
+      
+      #if defined(OPTION_PROSIGN_SUPPORT)
         static char * prosign_char = (char*)"";
 
         if ((cw_ascii_temp > PROSIGN_START) && (cw_ascii_temp < PROSIGN_END)){  // if we have a prosign code, convert it to chars
@@ -2371,7 +2374,19 @@ void service_keypad(){
         #if defined(FEATURE_DISPLAY) && defined(FEATURE_STRAIGHT_KEY_ECHO)
           if (cli_straight_key_echo){
             if (cw_ascii_temp){
-              display_scroll_print_char(cw_ascii_temp);
+                #ifdef OPTION_DISPLAY_NON_ENGLISH_EXTENSIONS
+                switch (cw_ascii_temp){       // LA4ZCA Added non-English character output to display for straight key decode
+                  case 220: cw_ascii_temp = 0;break; // U_umlaut  (D, ...)
+                  case 214: cw_ascii_temp = 1;break; // O_umlaut  (D, SM, OH, ...)
+                  case 196: cw_ascii_temp = 2;break; // A_umlaut  (D, SM, OH, ...)
+                  case 198: cw_ascii_temp = 3;break; // AE_capital (OZ, LA)
+                  case 216: cw_ascii_temp = 4;break; // OE_capital (OZ, LA)
+                  case 197: cw_ascii_temp = 6;break; // AA_capital (OZ, LA, SM)
+                  case 209: cw_ascii_temp = 7;break; // N-tilde (EA) 
+                }
+                #endif
+                display_scroll_print_char(cw_ascii_temp);              
+
             } else {
               display_scroll_print_char(prosign_char[0]);
               display_scroll_print_char(prosign_char[1]);
@@ -2393,7 +2408,24 @@ void service_keypad(){
         #endif //defined(FEATURE_SERIAL) && defined(FEATURE_COMMAND_LINE_INTERFACE)
 
         #if defined(FEATURE_DISPLAY) && defined(FEATURE_STRAIGHT_KEY_ECHO)
-          if (cli_straight_key_echo){display_scroll_print_char(convert_cw_number_to_ascii(decode_character));}
+          if (cli_straight_key_echo){
+
+          #ifdef OPTION_DISPLAY_NON_ENGLISH_EXTENSIONS
+                byte cw_ascii_temp = convert_cw_number_to_ascii(decode_character);
+                switch (cw_ascii_temp){       // LA4ZCA Added non-English character output to display for straight key decode
+                  case 220: cw_ascii_temp = 0;break; // U_umlaut  (D, ...)
+                  case 214: cw_ascii_temp = 1;break; // O_umlaut  (D, SM, OH, ...)
+                  case 196: cw_ascii_temp = 2;break; // A_umlaut  (D, SM, OH, ...)
+                  case 198: cw_ascii_temp = 3;break; // AE_capital (OZ, LA)
+                  case 216: cw_ascii_temp = 4;break; // OE_capital (OZ, LA)
+                  case 197: cw_ascii_temp = 6;break; // AA_capital (OZ, LA, SM)
+                  case 209: cw_ascii_temp = 7;break; // N-tilde (EA) 
+                }
+                display_scroll_print_char(cw_ascii_temp);              
+          #else
+            display_scroll_print_char(convert_cw_number_to_ascii(decode_character));
+          #endif
+          }
         #endif //FEATURE_DISPLAY
 
       #endif //OPTION_PROSIGN_SUPPORT
@@ -7651,7 +7683,6 @@ void setOneButton(int button, int index) {
 }
 #endif
 
-//------------------------------------------------------------------
 //------------------------------------------------------------------**************************************************************INIT ANALOG BUTTON ARRAY
 
 void initialize_analog_button_array() {
@@ -12100,7 +12131,7 @@ void service_paddle_echo()
             } else {
               display_scroll_print_char(byte(convert_cw_number_to_ascii(paddle_echo_buffer)));
             }
-          #else //OPTION_DISPLAY_NON_ENGLISH_EXTENSIONS
+          #else //OPTION_DISPLAY_NON_ENGLISH_EXTENSIONS // LA4ZCA Needs to be copied to straight key decode?
             ascii_temp = byte(convert_cw_number_to_ascii(paddle_echo_buffer));
             if ((ascii_temp > PROSIGN_START) && (ascii_temp < PROSIGN_END)){
               prosign_temp = convert_prosign(ascii_temp);
@@ -16372,9 +16403,9 @@ void check_eeprom_for_initialization(){
       EEPROM.format();//sp5iou 20180328 to reinitialize / format EEPROM
     #endif
     write_settings_to_eeprom(1);
-    beep_boop();
-    beep_boop();
-    beep_boop();
+//    beep_boop(); // LA4ZCA disabled EEPROM reset beep at startup
+//    beep_boop();
+//    beep_boop();
   }
 }
 
